@@ -90,11 +90,11 @@ class HomeFragment : Fragment() {
             fun(deviceType) {
 
             }, fun(e, deviceType) {
-                toDisconnected(e)
+                toDisconnected("$e $deviceType")
             }, fun(mac, deviceType) {
                 toConnected()
             }, fun(error, deviceType) {
-                toDisconnected(error)
+                toDisconnected("$error  last  $deviceType")
             })
     }
 //    var connectListener = fun(str: String) {

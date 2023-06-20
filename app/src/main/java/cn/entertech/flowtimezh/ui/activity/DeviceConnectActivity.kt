@@ -72,11 +72,11 @@ class DeviceConnectActivity : BaseActivity() {
             fun(deviceType) {
 
             }, fun(e, deviceType) {
-                toDisconnected(e.toString())
+                toDisconnected("$e $deviceType")
             }, fun(mac, deviceType) {
                 toConnected()
             }, fun(error, deviceType) {
-                toDisconnected(error)
+                toDisconnected("$error  last  $deviceType")
             })
     }
 

@@ -122,7 +122,7 @@ class ConnectedDeviceHelper {
                         scanSuccess.invoke(deviceType)
                     }, fun(e: Exception) {
                         scanError.invoke(
-                            Application.getInstance().getString(R.string.device_connect_error),
+                            Application.getInstance().getString(R.string.device_connect_error)+e.message,
                             deviceType
                         )
                     }, fun(mac: String) {
@@ -137,7 +137,7 @@ class ConnectedDeviceHelper {
                         scanSuccess.invoke(deviceType)
                     }, fun(e: Exception) {
                         scanError.invoke(
-                            Application.getInstance().getString(R.string.device_connect_error),
+                            Application.getInstance().getString(R.string.device_connect_error)+e.message,
                             deviceType
                         )
                     }, fun(mac: String) {
@@ -156,7 +156,7 @@ class ConnectedDeviceHelper {
                         scanSuccess.invoke(deviceType)
                     }, fun(e: Exception) {
                         scanError.invoke(
-                            Application.getInstance().getString(R.string.device_connect_error),
+                            Application.getInstance().getString(R.string.device_connect_error)+e.message,
                             deviceType
                         )
                     }, fun(mac: String) {
