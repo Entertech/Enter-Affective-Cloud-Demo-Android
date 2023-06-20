@@ -17,7 +17,7 @@ android {
     def BUILD_NAME = "build.number"
 
     def buildCode = getVersionCodeWithPropertyName(PROPERTY_FILE_NAME, BUILD_NAME)
-    def appVersionCode = "1.2.3"
+    def appVersionCode = "1.2.4"
     compileSdkVersion 32
     defaultConfig {
         applicationId "cn.entertech.flowtimelab"
