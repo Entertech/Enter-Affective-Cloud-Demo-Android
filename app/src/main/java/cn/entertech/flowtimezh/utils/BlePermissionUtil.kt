@@ -14,7 +14,9 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 
 fun requestPermission(activity:FragmentActivity,grantedCallback:()->Unit) {
     if (!isLocationEnable(activity)) {
-        Application.getInstance().startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        val intent=Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        Application.getInstance().startActivity(intent)
         return
     }
 
