@@ -5,6 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenLocal()
         
     }
     dependencies {
@@ -22,9 +23,10 @@ allprojects {
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }
         mavenCentral()
-//        maven {
-//            url "https://dl.bintray.com/hzentertech/maven"
-//        }
+        mavenLocal()
+        maven {
+            url "https://dl.bintray.com/hzentertech/maven"
+        }
     }
 }
 
