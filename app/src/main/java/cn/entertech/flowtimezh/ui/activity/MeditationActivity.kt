@@ -158,10 +158,10 @@ class MeditationActivity : BaseActivity() {
         initPowerManager()
         playSleepNoise()
         initVoiceListener()
-        if (deviceType == DEVICE_TYPE_CUSHION){
+        if (deviceType == DEVICE_TYPE_CUSHION) {
             meditationFragment?.hideBrainwaveAndAttention()
         }
-        if (SettingManager.getInstance().isSaveData){
+        if (SettingManager.getInstance().isSaveData) {
             initFileWritter()
         }
     }
@@ -171,10 +171,12 @@ class MeditationActivity : BaseActivity() {
             DEVICE_TYPE_HEADBAND, DEVICE_TYPE_ENTERTECH_VR -> {
                 initFlowtimeManager()
             }
+
             DEVICE_TYPE_CUSHION -> {
                 initCushionManager()
             }
-            DEVICE_TYPE_INNERPEACE_PRO->{
+
+            DEVICE_TYPE_INNERPEACE_PRO -> {
                 initInnerpeaceManager()
             }
         }
@@ -182,7 +184,7 @@ class MeditationActivity : BaseActivity() {
 
     fun bindAffectiveService() {
         var serviceIntent = Intent(this, AffectiveCloudService::class.java)
-        userId = intent.getStringExtra("userId")?:""
+        userId = intent.getStringExtra("userId") ?: ""
         var sex = intent.getStringExtra("sex")
         var age = intent.getStringExtra("age")
         var experimentDao = ExperimentDao(this)
@@ -453,11 +455,11 @@ class MeditationActivity : BaseActivity() {
         FileStoreHelper.getInstance()
             .setPath(saveRootPath + File.separator + "标签" + File.separator, "label.txt")
         reportFileHelper.setFilePath(saveReportDataPath + "report.txt")
-        if (deviceType == DEVICE_TYPE_INNERPEACE_PRO){
+        if (deviceType == DEVICE_TYPE_INNERPEACE_PRO) {
             rawInnerpeaceEEGFileHelper.setFilePath(saveRawDataPath + "eeg.txt")
-        }else if (deviceType == DEVICE_TYPE_CUSHION){
+        } else if (deviceType == DEVICE_TYPE_CUSHION) {
             rawPEPRFileHelper.setFilePath(saveRawDataPath + "pepr.txt")
-        }else{
+        } else {
             realtimeEEGLeftFileHelper.setFilePath(saveRealtimeDataPath + "brainwave_left.txt")
             realtimeEEGRightFileHelper.setFilePath(saveRealtimeDataPath + "brainwave_right.txt")
             realtimeAlphaFileHelper.setFilePath(saveRealtimeDataPath + "rhythms_alpha.txt")
@@ -576,7 +578,7 @@ class MeditationActivity : BaseActivity() {
 
     fun initView() {
         btn_end_experiment.setOnClickListener {
-            if (isStartRecord){
+            if (isStartRecord) {
                 showTipError(getString(R.string.segment_not_end))
                 return@setOnClickListener
             }
@@ -653,23 +655,24 @@ class MeditationActivity : BaseActivity() {
     }
 
 
-    fun initLabelList(){
+    fun initLabelList() {
         var meditationLabelsDao = MeditationLabelsDao(this)
-        var meditationLabels = meditationLabelsDao.findByMeditationId(meditationId)?: listOf()
+        var meditationLabels = meditationLabelsDao.findByMeditationId(meditationId) ?: listOf()
         adapter = MeditationLabelsListAdapter(meditationLabels)
         rv_label_list.adapter = adapter
         rv_label_list.layoutManager = LinearLayoutManager(this)
-        if (meditationLabels.isNotEmpty()){
+        if (meditationLabels.isNotEmpty()) {
             rv_label_list.visibility = View.VISIBLE
             tv_label_list_title.visibility = View.VISIBLE
 //            rv_label_list.smoothScrollToPosition(meditationLabels.size - 1)
         }
         tv_segment_name.text = "${getString(R.string.label_segments)}${meditationLabels.size + 1}"
     }
+
     fun refreshLabelList() {
         var meditationLabelsDao = MeditationLabelsDao(this)
-        var meditationLabels = meditationLabelsDao.findByMeditationId(meditationId)?: listOf()
-        if (meditationLabels.isNotEmpty()){
+        var meditationLabels = meditationLabelsDao.findByMeditationId(meditationId) ?: listOf()
+        if (meditationLabels.isNotEmpty()) {
             rv_label_list.visibility = View.VISIBLE
             tv_label_list_title.visibility = View.VISIBLE
 //            rv_label_list.smoothScrollToPosition(meditationLabels.size - 1)
@@ -711,11 +714,11 @@ class MeditationActivity : BaseActivity() {
         }
     }
 
-    private lateinit var rawListener: (ByteArray) -> Unit
-    private lateinit var heartRateListener: (Int) -> Unit
-    private lateinit var bleConnectListener: (String) -> Unit
-    private lateinit var contactListener: (Int) -> Unit
-    private lateinit var bleDisconnectListener: (String) -> Unit
+    private var rawListener: ((ByteArray) -> Unit)? = null
+    private var heartRateListener: ((Int) -> Unit)? = null
+    private var bleConnectListener: ((String) -> Unit)? = null
+    private var contactListener: ((Int) -> Unit)? = null
+    private var bleDisconnectListener: ((String) -> Unit)? = null
 
     var writeFileDataBuffer = ArrayList<Int>()
 
@@ -780,11 +783,21 @@ class MeditationActivity : BaseActivity() {
                 }
             }
         }
-        biomoduleBleManager.addRawDataListener(rawListener)
-        biomoduleBleManager.addHeartRateListener(heartRateListener)
-        biomoduleBleManager.addConnectListener(bleConnectListener)
-        biomoduleBleManager.addContactListener(contactListener)
-        biomoduleBleManager.addDisConnectListener(bleDisconnectListener)
+        rawListener?.apply {
+            biomoduleBleManager.addRawDataListener(this)
+        }
+        heartRateListener?.apply {
+            biomoduleBleManager.addHeartRateListener(this)
+        }
+        bleConnectListener?.apply {
+            biomoduleBleManager.addConnectListener(this)
+        }
+        contactListener?.apply {
+            biomoduleBleManager.addContactListener(this)
+        }
+        bleDisconnectListener?.apply {
+            biomoduleBleManager.addDisConnectListener(this)
+        }
         biomoduleBleManager.startHeartAndBrainCollection()
 
     }
@@ -927,7 +940,6 @@ class MeditationActivity : BaseActivity() {
             innerpeaceProBleManager.startCollection()
         }
     }
-
 
 
     lateinit var reportMeditationData: ReportMeditationDataEntity
@@ -1133,19 +1145,19 @@ class MeditationActivity : BaseActivity() {
         }
     }
 
-    fun toDisconnected(error:String){
+    fun toDisconnected(error: String) {
         runOnUiThread {
             showTipError(error)
         }
     }
 
-    fun toConnected(){
+    fun toConnected() {
         runOnUiThread {
             showTipSuccess("设备已连接")
         }
     }
 
-    fun connectDevice(){
+    fun connectDevice() {
         showLoading("Connecting")
         ConnectedDeviceHelper.scanNearDeviceAndConnect(
             SettingManager.getInstance().deviceType,
@@ -1175,6 +1187,7 @@ class MeditationActivity : BaseActivity() {
 //                scrollLayout.scrollToOpen()
                 connectDevice()
             }
+
             MessageEvent.MESSAGE_CODE_TO_NET_RESTORE -> {
                 if (affectiveCloudService!!.getSessionId() != null) {
                     affectiveCloudService?.restoreCloud(object : Callback {
@@ -1335,7 +1348,11 @@ class MeditationActivity : BaseActivity() {
                     override fun onSuccess() {
                         runOnUiThread {
                             loadingDialog?.dismiss()
-                            Toast.makeText(this@MeditationActivity, "标签提交成功！", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                this@MeditationActivity,
+                                "标签提交成功！",
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                             getReportAndExit()
                         }
@@ -1393,28 +1410,19 @@ class MeditationActivity : BaseActivity() {
         }
         return false
     }
-//    fun postRecord() {
-//        SyncManager.getInstance().uploadRecord(userLessonEntity!!, meditaiton, fun() {
-//            var messageEvent = MessageEvent()
-//            messageEvent.messageCode = MessageEvent.MESSAGE_CODE_TO_REFRESH_RECORD
-//            messageEvent.message = "refreshRecord"
-//            EventBus.getDefault().post(messageEvent)
-//        })
-//        toDataActivity()
-//    }
 
-    fun startFinishTimer() {
+    private fun startFinishTimer() {
         handler.postDelayed({
             finishRunnable
         }, 10000)
     }
 
-    fun unBindAffectiveService() {
+    private fun unBindAffectiveService() {
         unbindService(connection!!)
     }
 
 
-    fun playAirSound() {
+    private fun playAirSound() {
         airSoundMediaPlayer = MediaPlayer.create(
             this@MeditationActivity,
             R.raw.airsound
@@ -1425,7 +1433,7 @@ class MeditationActivity : BaseActivity() {
         airSoundMediaPlayer?.start()
     }
 
-    fun stopAirSound() {
+    private fun stopAirSound() {
         airSoundMediaPlayer?.stop()
         airSoundMediaPlayer?.release()
     }
@@ -1436,10 +1444,10 @@ class MeditationActivity : BaseActivity() {
         unBindAffectiveService()
         stopAirSound()
         wl?.release()
-        if (mContentObserver != null){
+        if (mContentObserver != null) {
             contentResolver?.unregisterContentObserver(mContentObserver!!)
         }
-        handler?.removeCallbacks(finishRunnable)
+        handler.removeCallbacks(finishRunnable)
         sessionId = null
         releaseBleManager()
         if (affectiveCloudService!!.isInited()) {
@@ -1450,37 +1458,69 @@ class MeditationActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    fun releaseBleManager() {
+    private fun releaseBleManager() {
         if (deviceType == DEVICE_TYPE_CUSHION) {
             releaseCushionBleManager()
-        } else if (deviceType == DEVICE_TYPE_HEADBAND){
+        } else if (deviceType == DEVICE_TYPE_HEADBAND || deviceType == DEVICE_TYPE_ENTERTECH_VR) {
             releaseHeadbandBleManager()
-        }else{
+        } else {
             releaseInnerpeaceBleManager()
         }
     }
 
-    fun releaseHeadbandBleManager() {
+    private fun releaseHeadbandBleManager() {
         biomoduleBleManager.stopHeartAndBrainCollection()
         biomoduleBleManager.stopBrainCollection()
-        biomoduleBleManager.removeRawDataListener(rawListener)
-        biomoduleBleManager.removeHeartRateListener(heartRateListener)
-        biomoduleBleManager.removeContactListener(contactListener)
-        biomoduleBleManager.removeDisConnectListener(bleDisconnectListener)
+        rawListener?.apply {
+            biomoduleBleManager.removeRawDataListener(this)
+        }
+        heartRateListener?.apply {
+            biomoduleBleManager.removeHeartRateListener(this)
+        }
+        contactListener?.apply {
+            biomoduleBleManager.removeContactListener(this)
+        }
+        bleConnectListener?.apply {
+            biomoduleBleManager.removeConnectListener(this)
+        }
+        bleDisconnectListener?.apply {
+            biomoduleBleManager.removeDisConnectListener(this)
+        }
     }
 
-    fun releaseCushionBleManager() {
+    private fun releaseCushionBleManager() {
         cushionBleManager.stopCollection()
-        cushionBleManager.removeRawDataListener(cushionRawListener!!)
-        cushionBleManager.removeContactDataListener(cushionContactListener!!)
-        cushionBleManager.removeDisConnectListener(cushionDisconnectListener!!)
-        cushionBleManager.removeConnectListener(cushionConnectListener!!)
+        cushionRawListener?.apply {
+            cushionBleManager.removeRawDataListener(this)
+        }
+        cushionContactListener?.apply {
+            cushionBleManager.removeContactDataListener(this)
+        }
+        cushionDisconnectListener?.apply {
+            cushionBleManager.removeDisConnectListener(this)
+
+        }
+        cushionConnectListener?.apply {
+            cushionBleManager.removeConnectListener(this)
+        }
     }
-    fun releaseInnerpeaceBleManager() {
+
+    private fun releaseInnerpeaceBleManager() {
         innerpeaceProBleManager.stopCollection()
-        innerpeaceProBleManager.removeRawDataListener(innerpeaceRawListener!!)
-        innerpeaceProBleManager.removeConnectListener(innerpeaceConnectListener!!)
-        innerpeaceProBleManager.removeDisConnectListener(innerpeaceDisconnectListener!!)
-        innerpeaceProBleManager.removeContactListener(innerpeaceContactListener!!)
+        innerpeaceRawListener?.apply {
+            innerpeaceProBleManager.removeRawDataListener(this)
+
+        }
+        innerpeaceConnectListener?.apply {
+            innerpeaceProBleManager.removeConnectListener(this)
+
+        }
+        innerpeaceDisconnectListener?.apply {
+            innerpeaceProBleManager.removeDisConnectListener(this)
+
+        }
+        innerpeaceContactListener?.apply {
+            innerpeaceProBleManager.removeContactListener(this)
+        }
     }
 }
