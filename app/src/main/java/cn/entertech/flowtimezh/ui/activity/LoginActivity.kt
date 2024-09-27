@@ -33,8 +33,8 @@ class LoginActivity : BaseActivity() {
         }
         var oldAppKey = SettingManager.getInstance().appKey
         var oldAppSecret = SettingManager.getInstance().appSecret
-        oldAppKey="9cd5f596-69bf-11ea-a76d-0242ac120002"
-        oldAppSecret="861804d00467aa6cb002b31ddeb4b55f"
+        oldAppKey="4eb4d51c-93dc-11ee-af9f-2a61184f9886"
+        oldAppSecret="829151f48c3422455034a74399150d3"
         if (oldAppKey != "" && oldAppSecret != "") {
             et_app_key.setText(oldAppKey)
             et_app_secret.setText(oldAppSecret)
