@@ -69,7 +69,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'cn.entertech.android:uicomponentsdk:1.4.3-alpha25'
-    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    implementation 'io.github.h07000223:flycoTabLayout:3.0.0'
     implementation 'cn.entertech.android:biomodulebleui:1.1.0'
     implementation 'cn.entertech.android:biomoduleble:1.4.0'
     implementation 'com.airbnb.android:lottie:3.0.7'
@@ -88,13 +88,13 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+//    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     implementation 'com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.3.1'
     implementation 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
     implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
-    implementation 'com.google.android:flexbox:2.0.1'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'cn.entertech.android:cushionble:1.0.0-alpha13'
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'cn.entertech.android:innerpeace-pro-ble:1.0.0-alpha02'
